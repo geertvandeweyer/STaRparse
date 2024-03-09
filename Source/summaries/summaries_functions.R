@@ -29,7 +29,7 @@ by_locus = function(df, output, savename, build, humandb, globdir){
   rm(df)
   compile <- Reduce(function(x, y) merge(x, y, all=TRUE), list(ref, avera, medi, minreps[c("Call_ID", "min")], maxreps[c("Call_ID", "max")], counts, stability, stddev, ee50, ee100))
   compile$Status <- ifelse(compile$Stab == 0, "STABLE", "POLYMORPHIC")
- 
+  print(compile)
   #     Annotate Repeats
   anno_dir <- paste0(output, "/Annovar")
   if (!dir.exists(anno_dir)) {
@@ -55,10 +55,12 @@ by_locus = function(df, output, savename, build, humandb, globdir){
   genes$V2 <- gsub(";", "->", genes$V2)
   genes$V7 <- paste(genes$V3, genes$V4, sep=".")
   genes$V7 <- gsub("chr", "", genes$V7)
+  print(genes)
   genes <- genes[c("V7", "V2", "V1")]
   names(genes) <- c("Call_ID", "Gene", "Region")
   compile <- merge(compile, genes, by="Call_ID")
   names(compile) <- c("Call_ID", "Chr", "Start", "Ref_Units", "Mean_Units", "Med_Units", "Min_Units", "Max_Units", "Hits", "Instability_Rating", "SD", "EE50", "EE100", "Status", "Gene", "Region")
+  print(compile)
   compile$Instability_Rating <- round(compile$Instability_Rating, 3)
   compile$SD <- round(compile$SD, 3)
   write.table(compile, paste0(output, savename, "_by_locus.csv"), quote = FALSE, col.names = TRUE, row.names = FALSE, sep="\t")
