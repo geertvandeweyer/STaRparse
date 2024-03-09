@@ -34,7 +34,7 @@ The available commands are:
         parser.add_argument('-o', '--output', type=str, metavar="", required=True, help='Path to Output Folder')
         parser.add_argument('-s', '--savename', type=str, metavar="", required=True, help='Identifier for output filenames')
         parser.add_argument('-b', '--gbuild', type=str, metavar="", required=True, help='Specify reference genome build in use (19, 37 or 38)')
-        parser.add_argument('-h','--humandb', type=str, metavar="", required=True, help='Path to folder with ANNOVAR data tables')
+        parser.add_argument('-H','--humandb', type=str, metavar="", required=True, help='Path to folder with ANNOVAR data tables')
         args = parser.parse_args(sys.argv[2:])
 
         from fullanalysis_main import main
@@ -62,7 +62,7 @@ The available commands are:
         parser.add_argument('-o', '--summaryoutput', type=str, metavar="", required=True, help='Summary output file path')
         parser.add_argument('-s', '--savename', type=str, metavar="", required=True, help='Identifier for output filenames')
         parser.add_argument('-b', '--gbuild', type=str, metavar="", required=True, help='Specify reference genome build in use (19, 37 or 38)')
-        parser.add_argument('-h','--humandb', type=str, metavar="", required=True, help='Path to folder with ANNOVAR data tables')
+        parser.add_argument('-H','--humandb', type=str, metavar="", required=True, help='Path to folder with ANNOVAR data tables')
         args = parser.parse_args(sys.argv[2:])
 
         from summaries_main import main
