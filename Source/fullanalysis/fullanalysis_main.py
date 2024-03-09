@@ -1,11 +1,11 @@
-#!/home/dannear/.virtualenvs/py365/bin/python3
+#!/usr/bin/env python3
 
     #	IMPORT LIBRARIES / MODULES
 import sys, glob, pandas, json, os
 #globdir = os.path.dirname(os.path.realpath(__file__))
 
     #	MAIN FUNCTION
-def main(vcfinput, jsoninput, output, savename, build, globdir):
+def main(vcfinput, jsoninput, output, savename, build, humandb, globdir):
     #	CHECK FILE PATHS ARE COMPLETE
     if output[-1] != "/":
         output += "/"
@@ -27,13 +27,13 @@ def main(vcfinput, jsoninput, output, savename, build, globdir):
     # 	FILTER READS
     sys.path.insert(1, globdir + "/Source/filter")
     from filter_main import main
-    reads_file_path = output + "CGG_Repeats_" + savename + ".csv"
-    coverage_file_path = output + "ReadCoverage_" + savename + ".csv"
-    main(reads_file_path, coverage_file_path, output, savename)
+    reads_file_path = os.path.join(output,f"CGG_Repeats_{savename}.csv")
+    coverage_file_path = os.path.join(output,f"ReadCoverage_{savename}.csv")
+    main(reads_file_path, coverage_file_path, output, savename, globdir)
 
     #	RUN SUMMARY FUNCTIONS
     sys.path.insert(1, globdir + "/Source/summaries")
     from summaries_main import main
     reads_filtered_path = output + "CGG_Repeats_" + savename + "_filtered.csv"
-    main(reads_filtered_path, output, savename, build)
+    main(reads_filtered_path, output, savename, build, humandb, globdir)
 

@@ -13,6 +13,7 @@ option_list <- list(
   make_option(c("-o", "--out"), type="character", action="store", default=NA, help="output file path and name", metavar="character"),
   make_option(c("-s", "--savename"), type="character", action="store", help="Indicate job name", metavar="character"),
   make_option(c("-b", "--build"), type="character", action="store", help="Specify reference genome build (19, 37, or 38)", metavar="character")
+  make_option(c("-h", "--humandb"), type="character", action="store", help="Path to humandb", metavar="character")
 )
 
 opt <- parse_args(OptionParser(option_list=option_list))
@@ -31,7 +32,7 @@ if (length(opt) != 6){
     outpath <- paste0(opt$out, opt$savename)
  
     #RUN FUNCTIONS
-    locusdf <- by_locus(reads, opt$out, opt$savename, opt$build)
+    locusdf <- by_locus(reads, opt$out, opt$savename, opt$build, opt$humandb)
     ratio_of_stability(locusdf, outpath)
     by_chr(reads, locusdf, outpath)
     by_sample(reads, locusdf, outpath)

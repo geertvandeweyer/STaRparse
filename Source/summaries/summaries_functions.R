@@ -1,4 +1,4 @@
-by_locus = function(df, output, savename, build){
+by_locus = function(df, output, savename, build, humandb){
   #     Housekeeping
   df$All1 <- ifelse(df$All1 == 0, df$All2, df$All1)
   df$All2 <- ifelse(df$All2 == 0, df$All1, df$All2)
@@ -39,7 +39,13 @@ by_locus = function(df, output, savename, build){
   anno$RA <- 0
   anno$AA <- "-"
   write.table(anno, paste0(anno_out, "_Anno.csv"), quote = FALSE, col.names = FALSE, row.names = FALSE, sep="\t")
-  system(paste0("perl /home/dannear/Binaries/annovar/annotate_variation.pl -out ", anno_dir, "/", savename,  "_Annovar -build ", paste0("hg", build)," ", anno_out, "_Anno.csv /home/dannear/Binaries/annovar/humandb"))
+  # mk command explicit.
+  perl_script = file.path(dirname(scriptname(__FILE__)),"annotate_variation.pl")
+  outfile_prefix = file.path(anno_dir,savename+"_Annovar")
+  outfile_name = anno_out+"_Anno.csv"
+  cmd = paste("perl",perl_script, "--geneanno", "--outfile", outfile_prefix, "--buildver", paste0("hg", build), outfile_name humandb)
+  print(cmd)
+  system(cmd)
   genes <- read.csv(paste0(anno_out, "_Annovar.variant_function"), sep = '\t', header = FALSE)
   genes$V1 <- revalue(genes$V1, c("upstream;downstream"="intergenic", "splicing"="intronic", "ncRNA_exonic"="ncRNA", "ncRNA_intronic"="ncRNA"))
   genes$V2 <- gsub("\\s*\\([^\\)]+\\)", "", genes$V2)

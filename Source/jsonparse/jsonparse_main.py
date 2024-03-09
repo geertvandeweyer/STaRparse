@@ -4,7 +4,7 @@
 import json, pandas as pd, glob, os
 
 #    DEFINE MAIN FUNCTION
-def main(input_path, output_path, savename, globdir):
+def main(input_path, output_path, savename):
     #           ENSURE CORRECT FILE PATH
     if output_path[-1] != "/": output_path += "/"
     if input_path[-1] != "/": input_path += "/"

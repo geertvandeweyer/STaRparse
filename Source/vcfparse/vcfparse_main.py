@@ -11,7 +11,7 @@ def Output(vcf_data, output, savename):
     print("###############     COMPLETE     ###############")
 
     #	MAIN FUNCTION
-def main(vcfinput, output, savename, globdir):
+def main(vcfinput, output, savename):
     #	CHECK FILE PATHS
     if output[-1] != "/":
         output += "/"

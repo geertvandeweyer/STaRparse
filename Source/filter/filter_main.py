@@ -1,4 +1,4 @@
-#!/home/dannear/.virtualenvs/py365/bin/python3
+#!/usr/bin/env python3
 
 import subprocess
 
