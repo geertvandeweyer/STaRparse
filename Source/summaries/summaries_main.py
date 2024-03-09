@@ -17,7 +17,7 @@ def main(reads, output, savename, build, humandb, globdir):
                                 "-o", output,
                                  "-s", savename,
                                 "-b",build,
-                                "-h", humandb], shell=False)
+                                "-H", humandb], shell=False)
         print(savename + " summary files can be found in directory: " + output)
     except:
         sys.exit(print("Error:	Failed to summarize repeat data"))

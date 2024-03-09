@@ -1,4 +1,4 @@
-by_locus = function(df, output, savename, build, humandb){
+by_locus = function(df, output, savename, build, humandb, globdir){
   #     Housekeeping
   df$All1 <- ifelse(df$All1 == 0, df$All2, df$All1)
   df$All2 <- ifelse(df$All2 == 0, df$All1, df$All2)
@@ -31,8 +31,10 @@ by_locus = function(df, output, savename, build, humandb){
   compile$Status <- ifelse(compile$Stab == 0, "STABLE", "POLYMORPHIC")
  
   #     Annotate Repeats
-  anno_dir <- paste0(output, "/Annonvar")
-  system(paste0("mkdir ", anno_dir))
+  anno_dir <- paste0(output, "/Annovar")
+  if (!dir.exists(anno_dir)) {
+    system(paste0("mkdir ", anno_dir))
+  }
   anno_out <- paste0(anno_dir, "/", savename)
   anno <- compile[c("Chr", "Start")]
   anno$End <- (anno$Start)+(3*compile$Ref_Units-1)
@@ -40,10 +42,10 @@ by_locus = function(df, output, savename, build, humandb){
   anno$AA <- "-"
   write.table(anno, paste0(anno_out, "_Anno.csv"), quote = FALSE, col.names = FALSE, row.names = FALSE, sep="\t")
   # mk command explicit.
-  perl_script = file.path(dirname(scriptname(__FILE__)),"annotate_variation.pl")
-  outfile_prefix = file.path(anno_dir,savename+"_Annovar")
-  outfile_name = anno_out+"_Anno.csv"
-  cmd = paste("perl",perl_script, "--geneanno", "--outfile", outfile_prefix, "--buildver", paste0("hg", build), outfile_name humandb)
+  perl_script = file.path(globdir,"Source", "summaries", "annotate_variation.pl")
+  outfile_prefix = file.path(anno_dir,paste0(savename,"_Annovar"))
+  outfile_name = paste0(anno_out,"_Anno.csv")
+  cmd = paste("perl", perl_script, "--geneanno", "--outfile", outfile_prefix, "--buildver", paste0("hg", build), outfile_name, humandb)
   print(cmd)
   system(cmd)
   genes <- read.csv(paste0(anno_out, "_Annovar.variant_function"), sep = '\t', header = FALSE)
