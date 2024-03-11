@@ -5,7 +5,7 @@ import sys, glob, pandas, json, os
 #globdir = os.path.dirname(os.path.realpath(__file__))
 
     #	MAIN FUNCTION
-def main(vcfinput, jsoninput, output, savename, build, humandb, globdir):
+def main(vcfinput, jsoninput, output, savename, build, humandb, globdir, reference):
     #	CHECK FILE PATHS ARE COMPLETE
     if output[-1] != "/":
         output += "/"
@@ -35,5 +35,5 @@ def main(vcfinput, jsoninput, output, savename, build, humandb, globdir):
     sys.path.insert(1, globdir + "/Source/summaries")
     from summaries_main import main
     reads_filtered_path = output + "CGG_Repeats_" + savename + "_filtered.csv"
-    main(reads_filtered_path, output, savename, build, humandb, globdir)
+    main(reads_filtered_path, output, savename, build, humandb, globdir, reference)
 

@@ -7,8 +7,7 @@ by_locus = function(df, output, savename, build, humandb, globdir){
   df$avealleles <- (df$All1+df$All2)/2
   
   #     Summarize
-  # NOTE : should this be All1, All2 instead of 2* All2 ?? 
-  mdata <- melt(df[c("Call_ID", "All2", "All2")], id="Call_ID")
+  mdata <- melt(df[c("Call_ID", "All1", "All2")], id="Call_ID")
   medi <- aggregate(list("Median" = mdata$value), by=list("Call_ID" = mdata$Call_ID), median)
   medi <- medi[order(medi$Call_ID),]
   df <- merge(df,medi,by="Call_ID")
@@ -30,7 +29,6 @@ by_locus = function(df, output, savename, build, humandb, globdir){
   rm(df)
   compile <- Reduce(function(x, y) merge(x, y, all=TRUE), list(ref, avera, medi, minreps[c("Call_ID", "min")], maxreps[c("Call_ID", "max")], counts, stability, stddev, ee50, ee100))
   compile$Status <- ifelse(compile$Stab == 0, "STABLE", "POLYMORPHIC")
-  #print(compile)
   #     Annotate Repeats
   anno_dir <- paste0(output, "/Annovar")
   if (!dir.exists(anno_dir)) {
@@ -47,7 +45,6 @@ by_locus = function(df, output, savename, build, humandb, globdir){
   outfile_prefix = file.path(anno_dir,paste0(savename,"_Annovar"))
   outfile_name = paste0(anno_out,"_Anno.csv")
   cmd = paste("perl", perl_script, "--geneanno", "--outfile", outfile_prefix, "--buildver", paste0("hg", build), outfile_name, humandb)
-  #print(cmd)
   system(cmd)
   genes <- read.csv(paste0(anno_out, "_Annovar.variant_function"), sep = '\t', header = FALSE)
   genes$V1 <- revalue(genes$V1, c("upstream;downstream"="intergenic", "splicing"="intronic", "ncRNA_exonic"="ncRNA", "ncRNA_intronic"="ncRNA"))
@@ -56,12 +53,10 @@ by_locus = function(df, output, savename, build, humandb, globdir){
   genes$V2 <- gsub(";", "->", genes$V2)
   genes$V7 <- paste(genes$V3, genes$V4, sep=".")
   genes$V7 <- gsub("chr", "", genes$V7)
-  #print(genes)
   genes <- genes[c("V7", "V2", "V1")]
   names(genes) <- c("Call_ID", "Gene", "Region")
   compile <- merge(compile, genes, by="Call_ID")
   names(compile) <- c("Call_ID", "Chr", "Start", "Ref_Units", "Mean_Units", "Med_Units", "Min_Units", "Max_Units", "Hits", "Instability_Rating", "SD", "EE50", "EE100", "Status", "Gene", "Region")
-  #print(compile)
   compile$Instability_Rating <- round(compile$Instability_Rating, 3)
   compile$SD <- round(compile$SD, 3)
   write.table(compile, paste0(output, savename, "_by_locus.csv"), quote = FALSE, col.names = TRUE, row.names = FALSE, sep="\t")
@@ -86,30 +81,16 @@ ratio_of_stability = function(df, output) {
 
 by_sample = function(df, locus, output){
   # POPULATION BASED
-  df <- merge(df, locus[c("Call_ID", "Med_Units", "Mean_Units", "SD","Instability_Rating","Status", "Gene", "Region")], by="Call_ID")
-  write.table(df, paste0(output, "_by_sample_full.csv"), sep="\t",col.names = TRUE, row.names = FALSE, quote = FALSE)
+  df <- merge(df, locus[c("Call_ID", "Med_Units", "Mean_Units", "SD","Instability_Rating","Status", "Gene", "Region")], by="Call_ID")  
   poly <- subset(df, df$All1 != Med_Units | df$All2 != Med_Units)
   pa <- aggregate(poly$Sample_ID, by = list(poly$Sample_ID), FUN = length)
   a <- aggregate(df$Sample_ID, by = list(df$Sample_ID), FUN = length)
   b <- aggregate((All1+All2)/2 ~Sample_ID, data = df, FUN = mean)
-  # AGAIN SHOULD THIS BE All1, All2 ? 
-  mdata <- melt(df[c("Sample_ID", "All2", "All2")], id="Sample_ID")
+  mdata <- melt(df[c("Sample_ID", "All1", "All2")], id="Sample_ID")
   c <- aggregate(mdata$value, by = list(mdata$Sample_ID), FUN = max)
   z <- data.frame("Sample_ID"=a$Group.1, "Highest_Repeat"=c$x, "Total_Repeats"=a$x, "Mean_Rep_length"=round(b$"(All1 + All2)/2", 2), "Unstable_Reps"=pa$x, "Percentage_Unstable_Reps"=round((pa$x/a$x*100), 2))
   z <- z[order(z$Sample_ID),]
   write.table(z, paste0(output, "_by_sample.csv"), quote = FALSE, col.names = TRUE, row.names = FALSE, sep="\t")
-  # HARD CUT-OFF FOR SINGLE SAMPLE ANALYSIS
-  # TODO : PASS AS ARGUMENTS
-  min_sd = 3
-  min_length = 50
-  # TODO : USE A PRECALCULATED REFSET TO GET SD/MEAN VALUES
-  # select rows i df WHERE either : 
-  #   - df$All1 > min(min_length, df$Mean_Units + min_sd * df$SD)
-  #   - df$All2 > min(min_length, df$Mean_Units + min_sd * df$SD)
-  # assign a large SD to SD == NA
-  df$SD[is.na(df$SD)] <- 100000
-  df_sign = subset(df, df$All1 > min(min_length, df$Mean_Units + min_sd * df$SD) | df$All2 > min(min_length, df$Mean_Units + min_sd * df$SD))
-  write.table(df_sign, paste0(output, "_by_sample_hard_cutoff.csv"), quote = FALSE, col.names = TRUE, row.names = FALSE, sep="\t")
 
 }
 
