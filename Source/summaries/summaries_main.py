@@ -3,14 +3,11 @@
 import subprocess, sys, os
 
     #   MAIN FUNCTION
-def main(reads, output, savename, build, humandb, globdir, reference=None):
+def main(reads, output, savename, build, humandb, globdir):
     #   CHECK FILE PATHS
     if output[-1] != "/":
         output += "/"
-    # reference file is valid
-    if reference and not os.path.isfile(reference):
-        raise ValueError(f"Provided reference file does not exist :{reference_file}")
-
+   
     #   RUN R FILTER SCRIPTS
     try:
         print("###############     SUMMARISING REPEAT DATA     ###############")
@@ -21,8 +18,7 @@ def main(reads, output, savename, build, humandb, globdir, reference=None):
                                  "-s", savename,
                                 "-b",build,
                                 "-H", humandb]
-        if reference:
-            cmd.extend(["-R",reference])
+        
             
         subprocess.check_call(cmd, shell=False)
         print(savename + " summary files can be found in directory: " + output)

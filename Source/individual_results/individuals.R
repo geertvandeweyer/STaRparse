@@ -14,13 +14,14 @@ option_list <- list(
   make_option(c("-s", "--savename"), type="character", action="store", help="Indicate job name", metavar="character"),
   make_option(c("-R", "--reference"), type="character", action="store", help="Previously built Reference file", metava="character", default=FALSE),
   make_option(c("-S","--min_sd"), type="integer", action="store", help="Nr. of SD deviations from mean length", metavar="int", default=3),
-  make_option(c("-L","--min_length"), type="integer", action="store", help="Minimum length of repeat", metavar="int", default=50)
+  make_option(c("-D","--min_diff"), type="integer", action="store", help="Nr. of repeat units from mean length", metavar="int", default=3),
+  make_option(c("-L","--min_length"), type="integer", action="store", help="Minimum length of repeat", metavar="int", default=25)
 )
 
 opt <- parse_args(OptionParser(option_list=option_list))
 
 #       ARGUMENT CHECK
-if (length(opt) != 8){
+if (length(opt) != 9){
   stop("Please ensure all aruments are supplied", call.=FALSE)
 } 
 ## small routine, put all code in main. 
@@ -42,8 +43,9 @@ df$SD[is.na(df$SD)] <- 100000
 # select significant rows in df WHERE either : 
 #   - df$All1 > min(min_length, df$Mean_Units + min_sd * df$SD)
 #   - df$All2 > min(min_length, df$Mean_Units + min_sd * df$SD)
-print(paste0("Extracting repeats over ",opt$min_length," units or over ",opt$min_sd,"*SD deviations from the mean over the refset"))
-df_sign = subset(df, df$All1 > pmin(opt$min_length, df$Mean_Units + opt$min_sd * df$SD) | df$All2 > pmin(opt$min_length, df$Mean_Units + opt$min_sd * df$SD))
+
+print(paste0("Extracting repeats over ",opt$min_length," units or over ",opt$min_sd,"*SD deviations or over ",opt$min_diff," units from the mean over the refset"))
+df_sign = subset(df, pmax(df$All1,df$All2) > pmax(opt$min_length, df$Med_Units + opt$min_diff,df$Med_Units + opt$min_sd * df$SD))
 
 write.table(df_sign, paste0(output, "_all_samples_hard_cutoff.csv"), quote = FALSE, col.names = TRUE, row.names = FALSE, sep="\t")
 
