@@ -77,20 +77,20 @@ The available commands are:
         sys.path.insert(1, globdir + "/Source/jsonparse")
         parser = argparse.ArgumentParser(description='Select JSON directory to be parsed.')
         parser.add_argument('-i', '--jsoninput', type=str, metavar="", required=True, help='Path to folder with JSON Input File(s)')
-        parser.add_argument('-o', '--output', type=str, metavar="", required=True, help='CSV Output File Path')
+        parser.add_argument('-o', '--output', type=str, metavar="", required=True, help='Path to otuput folder for CSV Output File')
         parser.add_argument('-s', '--savename', type=str, metavar="", required=True, help='JSON Output File Name')
         args = parser.parse_args(sys.argv[2:])
 
         from jsonparse_main import main
-        main(args.jsoninput, args.output, args.savename, globdir)
+        main(args.jsoninput, args.output, args.savename) #, globdir)
 
     def filter(self):
         global globdir
         sys.path.insert(1, globdir + "/Source/filter")
         parser = argparse.ArgumentParser(description='Select VCF $ JSON files to filter.')
-        parser.add_argument('-v', '--vcfinput', type=str, metavar="", required=True, help='VCF Input File Path')
-        parser.add_argument('-j', '--jsoninput', type=str, metavar="", required=True, help='JSON Input File Path')
-        parser.add_argument('-o', '--output', type=str, metavar="", required=True, help='Output Files Path')
+        parser.add_argument('-v', '--vcfinput', type=str, metavar="", required=True, help='Processed VCFs file (from vcfparse: Repeats_XX.csv)')
+        parser.add_argument('-j', '--jsoninput', type=str, metavar="", required=True, help='Processed JSONs file (from jsonparse: ReadCoverage_XX.csv)')
+        parser.add_argument('-o', '--output', type=str, metavar="", required=True, help='Path to folder for Output Files')
         parser.add_argument('-s', '--savename', type=str, metavar="", required=True, help='Files Save-name')
         args = parser.parse_args(sys.argv[2:])
 
