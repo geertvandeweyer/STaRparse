@@ -69,8 +69,17 @@ ratio_of_stability = function(df, output) {
   df$Med_Units <- round(df$Med_Units)
   unstable_reps <- subset(df, df$Status != "STABLE")
   stable_reps <- subset(df, df$Status == "STABLE")
-  count_stable <- aggregate(list("Stable_Reps"=stable_reps$Med_Units), by = list("Med_Units"=stable_reps$Med_Units), FUN = length)
-  count_unstable <- aggregate(list("Unstable_Reps"=unstable_reps$Mean_Units), by = list("Med_Units"=unstable_reps$Med_Units), FUN = length)
+  if (nrow(stable_reps) == 0) {
+    count_stable <- data.frame(Med_Units = numeric(), Stable_Reps = numeric())
+  } else {
+    count_stable <- aggregate(list("Stable_Reps"=stable_reps$Med_Units), by = list("Med_Units"=stable_reps$Med_Units), FUN = length)
+  } 
+  if (nrow(unstable_reps) == 0) {
+    count_unstable <- data.frame(Med_Units = numeric(), Unstable_Reps = numeric())
+  } else {
+    count_unstable <- aggregate(list("Unstable_Reps"=unstable_reps$Mean_Units), by = list("Med_Units"=unstable_reps$Med_Units), FUN = length)
+  }
+  
   count_total <- merge(count_stable, count_unstable, all = TRUE)
   count_total[is.na(count_total)] <- 0
   count_total$Total_Reps <- count_total$Stable_Reps+count_total$Unstable_Reps

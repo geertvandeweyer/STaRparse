@@ -3,7 +3,7 @@
 import subprocess, sys, os
 
     #   MAIN FUNCTION
-def main(reads, output, savename, globdir, reference,min_sd=3,min_diff=3,min_length=50):
+def main(reads, json, output, savename, globdir, reference,min_sd=3,min_diff=3,min_length=50):
     #   CHECK FILE PATHS
     if output[-1] != "/":
         output += "/"
@@ -23,6 +23,7 @@ def main(reads, output, savename, globdir, reference,min_sd=3,min_diff=3,min_len
                                 "-S", str(min_sd),
                                 "-D", str(min_diff), 
                                 "-L", str(min_length),
+                                "-j", json,
         ]
         subprocess.check_call(cmd, shell=False)
         print(savename + " repeat files can be found in directory: " + output)

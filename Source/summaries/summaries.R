@@ -30,8 +30,10 @@ if (length(opt) != 7){
     #IMPORT DATA
     reads <- read.csv(file=opt$reads, sep="\t", header = TRUE)
     # All1 and All2 are repeat length (alleles) observed in the current sample. 
-    names(reads) <- c("Call_ID", "Sample_ID", "Chr", "Start", "End", "GT", "Ref_Units", "All1", "All2")
+    names(reads) <- c("JSON_Call_ID", "Sample_ID", "Chr", "Start", "End", "GT", "Ref_Units", "All1", "All2")
     outpath <- paste0(opt$out, opt$savename)
+    # assign Call_ID as chr.start to
+    reads$Call_ID=paste(gsub("chr", "", reads$Chr),reads$Start,sep='.')
  
     #RUN FUNCTIONS
     locusdf <- by_locus(reads, opt$out, opt$savename, opt$build, opt$humandb, opt$dir)

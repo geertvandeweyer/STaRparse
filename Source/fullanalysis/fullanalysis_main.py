@@ -35,7 +35,14 @@ def main(vcfinput, jsoninput, output, savename, build, humandb, globdir, referen
     sys.path.insert(1, globdir + "/Source/summaries")
     from summaries_main import main
     reads_filtered_path = output + "CGG_Repeats_" + savename + "_filtered.csv"
-    main(reads_filtered_path, output, savename, build, humandb, globdir)
+    try:
+        main(reads_filtered_path, output, savename, build, humandb, globdir)
+    except Exception as e:
+        print(f"WARNING: Could not build summaries: {repr(e)}")
+        if not reference:
+            print("ERROR : Cannot continue without reference file")
+            sys.exit(1)
+        pass
 
     #	EXTRACT SAMPLE FUNCTIONS
     sys.path.insert(1, globdir + "/Source/individual_results")
@@ -43,6 +50,6 @@ def main(vcfinput, jsoninput, output, savename, build, humandb, globdir, referen
     if not reference:
         reference = os.path.join(output, f"{savename}_by_locus.csv")
     reads_filtered_path = output + "CGG_Repeats_" + savename + "_filtered.csv"
-    main(reads_filtered_path, output, savename, globdir, reference)
+    main(reads_filtered_path, jsoninput, output, savename, globdir, reference)
 
 
