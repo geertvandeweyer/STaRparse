@@ -1,12 +1,13 @@
 #!/usr/bin/env Rscript
 
 #       IMPORT LIBRARIES
+options(warn=-1)
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(reshape2))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(rjson))
-
+options(warn=0)
 #       DEFINE ARGUMENTS FOR SCRIPT
 option_list <- list(
   make_option(c("-d", "--dir"), type="character", action="store", default=NA, help="Path of global directory", metavar="character"),
@@ -28,9 +29,14 @@ if (length(opt) != 10){
 } 
 
 add_supporting_reads <- function(df_sign, json_dir) {
-  df_sign$Flanking_Reads <- NA
-  df_sign$InRepeat_Reads <- NA
-  df_sign$Spanning_Reads <- NA
+  # add columns for supporting reads
+  if (nrow(df_sign) > 0) {
+    df_sign$Flanking_Reads <- NA
+    df_sign$InRepeat_Reads <- NA
+    df_sign$Spanning_Reads <- NA
+  } else {
+    df_sign <- cbind(df_sign, Flanking_Reads=numeric(0), InRepeat_Reads=numeric(0), Spanning_Reads=numeric(0))
+  }
   for (sample in unique(df$Sample_ID)){
     print(paste("Extract support data for sample",sample))
     json_sample = fromJSON(file=paste0(json_dir,"/",sample,".json"))
@@ -73,6 +79,7 @@ df$SD[is.na(df$SD)] <- 100000
 
 print(paste0("Extracting repeats over ",opt$min_length," units or over ",opt$min_sd,"*SD deviations or over ",opt$min_diff," units from the mean over the refset"))
 df_sign = subset(df, pmax(df$All1,df$All2) > pmax(opt$min_length, df$Med_Units + opt$min_diff,df$Med_Units + opt$min_sd * df$SD))
+
 # add the supporting read counts.
 df_sign <- add_supporting_reads(df_sign,opt$json)
 
@@ -82,7 +89,7 @@ write.table(df_sign, paste0(output, "_all_samples_hard_cutoff.csv"), quote = FAL
 for (sample in unique(df$Sample_ID)){
   df_sample = subset(df_sign, df_sign$Sample_ID == sample)
   # read json
-  json_sample = fromJSON(file=paste0(opt$json,"/",sample,".json"))
+  # json_sample = fromJSON(file=paste0(opt$json,"/",sample,".json"))
 
   write.table(df_sample, paste0(output, "_sign_", sample, ".csv"), quote = FALSE, col.names = TRUE, row.names = FALSE, sep="\t")
 }

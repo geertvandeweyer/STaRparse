@@ -1,11 +1,12 @@
 #!/usr/bin/env Rscript
 
 #       IMPORT LIBRARIES
+options(warn=-1)
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(reshape2))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(plyr))
-
+options(warn=0)
 #       DEFINE ARGUMENTS FOR SCRIPT
 option_list <- list(
   make_option(c("-d", "--dir"), type="character", action="store", default=NA, help="Path of global directory", metavar="character"),
