@@ -61,7 +61,7 @@ The available commands are:
         sys.path.insert(1, globdir + "/Source/summaries")
         parser = argparse.ArgumentParser(description='Summarise STR reads')
         parser.add_argument('-i', '--csvinput', type=str, metavar="", required=True, help='Input CSV file path')
-        parser.add_argument('-o', '--summaryoutput', type=str, metavar="", required=True, help='Summary output file path')
+        parser.add_argument('-o', '--summaryoutput', type=str, metavar="", required=True, help='Path to output folder for summary files')
         parser.add_argument('-s', '--savename', type=str, metavar="", required=True, help='Identifier for output filenames')
         parser.add_argument('-b', '--gbuild', type=str, metavar="", required=True, help='Specify reference genome build in use (19, 37 or 38)')
         parser.add_argument('-H','--humandb', type=str, metavar="", required=True, help='Path to folder with ANNOVAR data tables')

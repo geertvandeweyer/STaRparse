@@ -27,14 +27,14 @@ def main(vcfinput, jsoninput, output, savename, build, humandb, globdir, referen
     # 	FILTER READS
     sys.path.insert(1, globdir + "/Source/filter")
     from filter_main import main
-    reads_file_path = os.path.join(output,f"CGG_Repeats_{savename}.csv")
+    reads_file_path = os.path.join(output,f"Repeats_{savename}.csv")
     coverage_file_path = os.path.join(output,f"ReadCoverage_{savename}.csv")
     main(reads_file_path, coverage_file_path, output, savename, globdir)
 
     #	RUN SUMMARY FUNCTIONS
     sys.path.insert(1, globdir + "/Source/summaries")
     from summaries_main import main
-    reads_filtered_path = output + "CGG_Repeats_" + savename + "_filtered.csv"
+    reads_filtered_path = output + "Repeats_" + savename + "_filtered.csv"
     try:
         main(reads_filtered_path, output, savename, build, humandb, globdir)
     except Exception as e:
@@ -49,7 +49,7 @@ def main(vcfinput, jsoninput, output, savename, build, humandb, globdir, referen
     from individuals_main import main
     if not reference:
         reference = os.path.join(output, f"{savename}_by_locus.csv")
-    reads_filtered_path = output + "CGG_Repeats_" + savename + "_filtered.csv"
+    reads_filtered_path = output + "Repeats_" + savename + "_filtered.csv"
     main(reads_filtered_path, jsoninput, output, savename, globdir, reference)
 
 
