@@ -6,8 +6,8 @@ import glob, pandas
     #	OUTPUT FUNCTION
 def Output(vcf_data, output, savename):
     df = pandas.DataFrame(vcf_data)
-    df.to_csv(output+"CGG_Repeats_" + savename  + ".csv", sep='\t', index=None, header=True)
-    print("Output CSV file can be found at: "+output+"CGG_Repeats_" + savename  + ".csv")
+    df.to_csv(output+"Repeats_" + savename  + ".csv", sep='\t', index=None, header=True)
+    print("Output CSV file can be found at: "+output+"Repeats_" + savename  + ".csv")
     print("###############     COMPLETE     ###############")
 
     #	MAIN FUNCTION
